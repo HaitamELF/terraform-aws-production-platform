@@ -28,3 +28,7 @@ terraform.rc
 Thumbs.db
 
 *.tfstate
+
+# Terraform plan files
+*.tfplan
+tfplan
