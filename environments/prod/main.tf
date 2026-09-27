@@ -70,3 +70,15 @@ module "vpc_endpoints" {
 
   ec2_security_group_id = module.security.ec2_security_group_id
 }
+
+module "secrets" {
+  source = "../../modules/secrets"
+
+  name        = var.project_name
+  environment = var.environment
+
+  ec2_role_name = module.iam.ec2_role_name
+
+  aws_region     = var.aws_region
+  aws_account_id = data.aws_caller_identity.current.account_id
+}
