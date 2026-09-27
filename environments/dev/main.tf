@@ -5,7 +5,7 @@ data "aws_availability_zones" "available" {
 }
 
 module "vpc" {
-  source = "./modules/vpc"
+  source = "../../modules/vpc"
 
   name        = "production-platform"
   environment = "dev"
@@ -30,14 +30,14 @@ module "vpc" {
 }
 
 module "iam" {
-  source = "./modules/iam"
+  source = "../../modules/iam"
 
   name        = "production-platform"
   environment = "dev"
 }
 
 module "security" {
-  source = "./modules/security"
+  source = "../../modules/security"
 
   name             = "production-platform"
   environment      = "dev"
@@ -46,7 +46,7 @@ module "security" {
 }
 
 module "compute" {
-  source = "./modules/compute"
+  source = "../../modules/compute"
 
   enabled = false
 
@@ -63,7 +63,7 @@ module "compute" {
 }
 
 module "vpc_endpoints" {
-  source = "./modules/vpc-endpoints"
+  source = "../../modules/vpc-endpoints"
 
   enabled = false
 
