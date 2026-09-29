@@ -38,3 +38,8 @@ variable "aws_region" {
   description = "AWS region"
   type        = string
 }
+
+variable "private_route_table_ids" {
+  description = "Private route tables associated with the S3 gateway endpoint"
+  type        = list(string)
+}

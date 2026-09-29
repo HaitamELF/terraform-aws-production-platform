@@ -23,6 +23,52 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+locals {
+  cloudwatch_agent_config = jsonencode({
+    agent = {
+      metrics_collection_interval = 60
+    }
+
+    metrics = {
+      namespace = var.cloudwatch_namespace
+
+      append_dimensions = {
+        InstanceId = "$${aws:InstanceId}"
+      }
+
+      metrics_collected = {
+        mem = {
+          measurement = [
+            "mem_used_percent"
+          ]
+
+          metrics_collection_interval = 60
+        }
+
+        disk = {
+          measurement = [
+            "used_percent"
+          ]
+
+          metrics_collection_interval = 60
+
+          resources = [
+            "/"
+          ]
+        }
+      }
+    }
+  })
+
+  user_data = templatefile(
+    "${path.module}/user_data.sh.tftpl",
+    {
+      cloudwatch_agent_config = local.cloudwatch_agent_config
+      aws_region              = var.aws_region
+    }
+  )
+}
+
 resource "aws_instance" "app" {
   count         = var.enabled ? 1 : 0
   ami           = data.aws_ami.amazon_linux.id
@@ -34,6 +80,10 @@ resource "aws_instance" "app" {
   iam_instance_profile = var.instance_profile_name
 
   associate_public_ip_address = false
+
+  user_data = local.user_data
+
+  user_data_replace_on_change = true
 
   metadata_options {
     http_endpoint = "enabled"

@@ -39,3 +39,13 @@ variable "enabled" {
   type        = bool
   default     = false
 }
+
+variable "cloudwatch_namespace" {
+  description = "CloudWatch namespace used by the CloudWatch Agent"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region used by the EC2 bootstrap process"
+  type        = string
+}

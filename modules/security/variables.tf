@@ -28,3 +28,10 @@ variable "application_port" {
     error_message = "application_port must be between 1 and 65535."
   }
 }
+
+variable "endpoint_security_group_id" {
+  description = "Security group ID attached to private VPC endpoints"
+  type        = string
+  default     = null
+  nullable    = true
+}

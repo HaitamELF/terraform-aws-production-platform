@@ -77,3 +77,23 @@ variable "vpc_endpoints_enabled" {
   description = "Whether private SSM VPC endpoints should be deployed"
   type        = bool
 }
+
+variable "log_retention_days" {
+  description = "Number of days CloudWatch application logs are retained"
+  type        = number
+
+  validation {
+    condition     = var.log_retention_days > 0
+    error_message = "log_retention_days must be greater than zero."
+  }
+}
+
+variable "cpu_alarm_threshold" {
+  description = "CPU utilization percentage that triggers the high CPU alarm"
+  type        = number
+
+  validation {
+    condition     = var.cpu_alarm_threshold > 0 && var.cpu_alarm_threshold <= 100
+    error_message = "cpu_alarm_threshold must be between 0 and 100."
+  }
+}

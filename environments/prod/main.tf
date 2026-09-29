@@ -53,6 +53,8 @@ module "compute" {
   instance_profile_name = module.iam.ec2_instance_profile_name
 
   instance_type = var.instance_type
+
+  cloudwatch_namespace = "${var.project_name}/${var.environment}"
 }
 
 module "vpc_endpoints" {
@@ -69,6 +71,9 @@ module "vpc_endpoints" {
   private_subnet_ids = module.vpc.private_subnet_ids
 
   ec2_security_group_id = module.security.ec2_security_group_id
+
+  private_route_table_ids = module.vpc.private_route_table_ids
+
 }
 
 module "secrets" {
@@ -81,4 +86,20 @@ module "secrets" {
 
   aws_region     = var.aws_region
   aws_account_id = data.aws_caller_identity.current.account_id
+}
+
+module "observability" {
+  source = "../../modules/observability"
+
+  name        = var.project_name
+  environment = var.environment
+
+  ec2_role_name = module.iam.ec2_role_name
+
+  log_retention_days = var.log_retention_days
+
+  compute_enabled = var.compute_enabled
+  instance_id     = module.compute.instance_id
+
+  cpu_alarm_threshold = var.cpu_alarm_threshold
 }

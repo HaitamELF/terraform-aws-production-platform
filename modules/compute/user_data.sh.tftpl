@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+CW_AGENT_RPM="/tmp/amazon-cloudwatch-agent.rpm"
+
+curl --fail \
+  --silent \
+  --show-error \
+  --location \
+  --output "$CW_AGENT_RPM" \
+  "https://amazoncloudwatch-agent-${aws_region}.s3.${aws_region}.amazonaws.com/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm"
+
+rpm -U "$CW_AGENT_RPM"
+
+rm -f "$CW_AGENT_RPM"
+
+mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
+
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<'EOF'
+${cloudwatch_agent_config}
+EOF
+
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+  -s
+
+systemctl enable amazon-cloudwatch-agent
+systemctl restart amazon-cloudwatch-agent

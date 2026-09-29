@@ -22,3 +22,8 @@ output "availability_zones" {
   description = "Availability zones used by the VPC"
   value       = var.availability_zones
 }
+
+output "private_route_table_ids" {
+  description = "IDs of the private subnet route tables"
+  value       = aws_route_table.private[*].id
+}
